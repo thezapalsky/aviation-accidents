@@ -21,10 +21,13 @@ N <- 89
 for (n in 1:N) {
   #new_em[n][[1]]["Data"]<-"1"
   new_em[[n]][["Data"]] <-gsub("0000", n+1929, new_em[[n]][["Data"]])
-  substr(new_em[[n]][["Data"]],1,10)
+  new_em[[n]][["Data"]] <-substr(new_em[[n]][["Data"]],1,10)
 }
-# new_em[[1]][["Data"]]
+new_em[[1]][["Data"]]
+
 superdane <- new_em
+lapply(superdane, function(x) write.table( data.frame(x), 'superdane.csv'  , append= T, sep=',' ))
+
 
 #substring(new_em[[1]][["Data"]], 1:6, 1:6)
 
