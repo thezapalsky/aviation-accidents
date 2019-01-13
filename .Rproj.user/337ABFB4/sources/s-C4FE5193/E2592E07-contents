@@ -16,7 +16,7 @@ N <- 89 # lata 1930 - 2018
 for (n in 1:N) { #"czyszcze dane, ujednolicam format"
   new_em[[n]][["Data"]] <-gsub("0000", n+1929, new_em[[n]][["Data"]])
   new_em[[n]][["Data"]] <-substr(new_em[[n]][["Data"]],1,10)
-  new_em[[n]][["Data"]] <-gsub("styczni", paste(toString(n+1929),"chujjjjj",sep=""), new_em[[n]][["Data"]])
+  #new_em[[n]][["Data"]] <-gsub("styczni", paste(toString(n+1929),"chujjjjj",sep=""), new_em[[n]][["Data"]])
     
 }
 new_em[[89]][["Data"]]
