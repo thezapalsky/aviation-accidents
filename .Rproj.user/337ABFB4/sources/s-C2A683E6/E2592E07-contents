@@ -1,5 +1,6 @@
 library(rvest)
 library(stringr)
+library(ggplot2)
 url<-"https://pl.wikipedia.org/wiki/Katastrofy_i_incydenty_cywilnych_samolot%C3%B3w_pasa%C5%BCerskich?fbclid=IwAR2tXXC4Z4bFOv6Ml1uVeepVWg2S7EEd53hQ2D3WLABtRH8WFLYf5MIppX8"
 x<-url
 parse_result<-function(x){
@@ -54,19 +55,17 @@ suma_ocalen<-0
 zgony_w_latach<-c()
 ocalenia_w_latach<-c()
 for (n in 1:N){
-  zgony_w_latach<-append(zgony_w_latach,sum(strtoi(superdane[[n]][["Ofiary"]][!is.na(superdane[[n]][["Ocaleni"]])]),na.rm = F))
-  ocalenia_w_latach<-append(ocalenia_w_latach,sum(strtoi(superdane[[n]][["Ocaleni"]]),na.rm = F))
-  
-  suma_zgonow<-suma_zgonow+sum(strtoi(superdane[[n]][["Ofiary"]][!is.na(superdane[[n]][["Ocaleni"]])]),na.rm = T)
-  suma_ocalen<-suma_ocalen+sum(strtoi(superdane[[n]][["Ocaleni"]][!is.na(superdane[[n]][["Ofiary"]])]),na.rm = T)
-  #print(superdane[[n]][["Ofiary"]][!is.na(superdane[[n]][["Ofiary"]]) & is.na(superdane[[n]][["Ocaleni"]])])
+  zgony_w_latach<-append(zgony_w_latach,sum(strtoi(superdane[[n]][["Ofiary"]]),na.rm = T))
+  ocalenia_w_latach<-append(ocalenia_w_latach,sum(strtoi(superdane[[n]][["Ocaleni"]]),na.rm = T))
+  # 
+  # suma_zgonow<-suma_zgonow+sum(strtoi(superdane[[n]][["Ofiary"]][!is.na(superdane[[n]][["Ocaleni"]])]),na.rm = T)
+  # suma_ocalen<-suma_ocalen+sum(strtoi(superdane[[n]][["Ocaleni"]][!is.na(superdane[[n]][["Ofiary"]])]),na.rm = T)
+  # #print(superdane[[n]][["Ofiary"]][!is.na(superdane[[n]][["Ofiary"]]) & is.na(superdane[[n]][["Ocaleni"]])])
 }
-print(suma_ocalen/(suma_zgonow+suma_ocalen)) #47% szansy na ocalanie?
-
+#print(suma_ocalen/(suma_zgonow+suma_ocalen)) #47% szansy na ocalanie?
+procent_ocalalalych_w_latach <-round(ocalenia_w_latach/(ocalenia_w_latach+zgony_w_latach),2)
 #w 4 przypadkach są ofiary a ocaleni są NA
 
-
-
-
-
-
+lata<-c(1930:2018)
+aaa<-data.frame(lata,procent_ocalalalych_w_latach)
+ggplot(aaa, aes(x=lata, y=procent_ocalalalych_w_latach))+geom_bar(stat="identity", width=1,color="blue",fill="lightblue")+theme_minimal()
