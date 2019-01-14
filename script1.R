@@ -54,12 +54,14 @@ zgony_w_latach<-c()
 ocalenia_w_latach<-c()
 wszystkie_linie_w_latach<-c()
 wszystkie_kraje_w_latach<-c()
+ilosc_katastrof_w_latach<-c()
 
 for (n in 1:N){
   zgony_w_latach<-append(zgony_w_latach,sum(strtoi(superdane[[n]][["Ofiary"]]),na.rm = T))
   ocalenia_w_latach<-append(ocalenia_w_latach,sum(strtoi(superdane[[n]][["Ocaleni"]]),na.rm = T))
   wszystkie_linie_w_latach<-append(wszystkie_linie_w_latach,superdane[[n]][["Linie lotnicze"]])
   wszystkie_kraje_w_latach<-append(wszystkie_kraje_w_latach,superdane[[n]][["Miejsce zdarzenia"]])
+  ilosc_katastrof_w_latach<-append(ilosc_katastrof_w_latach,length(superdane[[n]][[1]][!is.na(superdane[[n]][["Ofiary"]])]))
 }
 procent_ocalalalych_w_latach <-round(ocalenia_w_latach/(ocalenia_w_latach+zgony_w_latach),2)
 
@@ -76,8 +78,17 @@ round(suma_ocalenia/(suma_ocalenia+suma_zgonow),2) #statystycznie 47% szansy na 
 #najniebezpieczniejsze linie
 tabela_linii <-sort(table(wszystkie_linie_w_latach),decreasing = T)
 #View(tabela_linii)
-tabela_linii[1:10]
+tabela_linii[1:10] #wynika to zapewne ze skalą przedśiębiorstw lotniczych, nie mogłem znaleźć danych o ilościach lotów dla lini lotniczych w tamtych latach
+plot(tabela_linii[1:10],type='h',lwd=10)
 
 #najniebezpieczniejsze kraje
 tabela_krajow <-sort(table(wszystkie_kraje_w_latach),decreasing = T)
-tabela_krajow[1:10]
+tabela_krajow[1:10] # tak samo jak wyżej
+plot(tabela_krajow[1:10],type='h',lwd=10)
+
+#ilośc zabitych / ilośc katastrof na przestrzeni lat
+wskaznik_zgony_per_katastrofa<-zgony_w_latach/ilosc_katastrof_w_latach
+#plot(wskaznik_zgony_per_katastrofa, type='h',xlab="lata")
+bbb <- data.frame(lata,wskaznik_zgony_per_katastrofa)
+ggplot(bbb, aes(x=lata, y=wskaznik_zgony_per_katastrofa))+geom_bar(stat="identity", width=1,color="blue",fill="lightblue")+theme_minimal()
+

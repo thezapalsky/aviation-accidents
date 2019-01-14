@@ -79,13 +79,12 @@ round(suma_ocalenia/(suma_ocalenia+suma_zgonow),2) #statystycznie 47% szansy na 
 tabela_linii <-sort(table(wszystkie_linie_w_latach),decreasing = T)
 #View(tabela_linii)
 tabela_linii[1:10] #wynika to zapewne ze skalą przedśiębiorstw lotniczych, nie mogłem znaleźć danych o ilościach lotów dla lini lotniczych w tamtych latach
-plot(tabela_linii[1:10],type='h')
+plot(tabela_linii[1:10],type='h',lwd=10)
 
 #najniebezpieczniejsze kraje
 tabela_krajow <-sort(table(wszystkie_kraje_w_latach),decreasing = T)
 tabela_krajow[1:10] # tak samo jak wyżej
-
-plot(tabela_krajow[1:10],type='h')
+plot(tabela_krajow[1:10],type='h',lwd=10)
 
 #ilośc zabitych / ilośc katastrof na przestrzeni lat
 wskaznik_zgony_per_katastrofa<-zgony_w_latach/ilosc_katastrof_w_latach
