@@ -44,28 +44,52 @@ for (n in 1:N) { #"czyszcze danych, ujednolicam format"
     }
     #zamieniam '?' na <NA>
   }
-new_em[[89]][["Data"]]
 
 superdane <- new_em
 lapply(superdane, function(x) write.table( data.frame(x), 'superdane.csv'  , append= T, sep=',' ))
-View(superdane) # lista 89 elementów (jeden element == lista z danego roku)
+#View(superdane) # lista 89 elementów (jeden element == lista z danego roku)
 
-suma_zgonow<-0
-suma_ocalen<-0
+#ocalenia
 zgony_w_latach<-c()
 ocalenia_w_latach<-c()
+wszystkie_linie_w_latach<-c()
+wszystkie_kraje_w_latach<-c()
+ilosc_katastrof_w_latach<-c()
+
 for (n in 1:N){
   zgony_w_latach<-append(zgony_w_latach,sum(strtoi(superdane[[n]][["Ofiary"]]),na.rm = T))
   ocalenia_w_latach<-append(ocalenia_w_latach,sum(strtoi(superdane[[n]][["Ocaleni"]]),na.rm = T))
-  # 
-  # suma_zgonow<-suma_zgonow+sum(strtoi(superdane[[n]][["Ofiary"]][!is.na(superdane[[n]][["Ocaleni"]])]),na.rm = T)
-  # suma_ocalen<-suma_ocalen+sum(strtoi(superdane[[n]][["Ocaleni"]][!is.na(superdane[[n]][["Ofiary"]])]),na.rm = T)
-  # #print(superdane[[n]][["Ofiary"]][!is.na(superdane[[n]][["Ofiary"]]) & is.na(superdane[[n]][["Ocaleni"]])])
+  wszystkie_linie_w_latach<-append(wszystkie_linie_w_latach,superdane[[n]][["Linie lotnicze"]])
+  wszystkie_kraje_w_latach<-append(wszystkie_kraje_w_latach,superdane[[n]][["Miejsce zdarzenia"]])
+  ilosc_katastrof_w_latach<-append(ilosc_katastrof_w_latach,length(superdane[[n]][[1]][!is.na(superdane[[n]][["Ofiary"]])]))
 }
-#print(suma_ocalen/(suma_zgonow+suma_ocalen)) #47% szansy na ocalanie?
 procent_ocalalalych_w_latach <-round(ocalenia_w_latach/(ocalenia_w_latach+zgony_w_latach),2)
-#w 4 przypadkach są ofiary a ocaleni są NA
 
+#procent ocalalych wykres
 lata<-c(1930:2018)
 aaa<-data.frame(lata,procent_ocalalalych_w_latach)
 ggplot(aaa, aes(x=lata, y=procent_ocalalalych_w_latach))+geom_bar(stat="identity", width=1,color="blue",fill="lightblue")+theme_minimal()
+
+suma_ocalenia<-sum(ocalenia_w_latach)
+suma_zgonow<-sum(zgony_w_latach)
+
+round(suma_ocalenia/(suma_ocalenia+suma_zgonow),2) #statystycznie 47% szansy na ocalanie 
+
+#najniebezpieczniejsze linie
+tabela_linii <-sort(table(wszystkie_linie_w_latach),decreasing = T)
+#View(tabela_linii)
+tabela_linii[1:10] #wynika to zapewne ze skalą przedśiębiorstw lotniczych, nie mogłem znaleźć danych o ilościach lotów dla lini lotniczych w tamtych latach
+plot(tabela_linii[1:10],type='h')
+
+#najniebezpieczniejsze kraje
+tabela_krajow <-sort(table(wszystkie_kraje_w_latach),decreasing = T)
+tabela_krajow[1:10] # tak samo jak wyżej
+
+plot(tabela_krajow[1:10],type='h')
+
+#ilośc zabitych / ilośc katastrof na przestrzeni lat
+wskaznik_zgony_per_katastrofa<-zgony_w_latach/ilosc_katastrof_w_latach
+#plot(wskaznik_zgony_per_katastrofa, type='h',xlab="lata")
+bbb <- data.frame(lata,wskaznik_zgony_per_katastrofa)
+ggplot(bbb, aes(x=lata, y=wskaznik_zgony_per_katastrofa))+geom_bar(stat="identity", width=1,color="blue",fill="lightblue")+theme_minimal()
+
