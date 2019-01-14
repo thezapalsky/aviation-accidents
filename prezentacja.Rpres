@@ -1,3 +1,14 @@
+Analiza katastrof cywilnych samolotów pasażerskich w latach 1930-2018
+========================================================
+author: Mikołaj Zapalski Jan Proniewicz
+date: 14 styczeń 2019
+autosize: true
+(polecam powiększyć okno na cały ekran, aby nie ucinało slajdów)
+
+Krok 1 - pobieramy dane
+========================================================
+
+```{r}
 library(rvest)
 library(stringr)
 library(ggplot2)
@@ -10,16 +21,19 @@ parse_result<-function(x){
 }
 
 em<-parse_result(url)
+new_em <- em[6:94] #wywalam spis tresci i lata z dziurami, czyli te które nas nie interesują
+```
 
+
+Krok 2 - "oczyszczamy" dane
+========================================================
+
+```{r}
 N <- 89 # lata 1930 - 2018
 J <- 9
-new_em <- em[6:94] #wywalam spis tresci i lata z dziurami
-
-for (n in 1:N) { #"czyszcze danych, ujednolicam format"
-  #new_em[[n]][["Data"]] <-substr(new_em[[n]][["Data"]],1,10)
-  #if(new_em[[n]][["Data"]]<1) #jesli jest format z 0000
-  #new_em[[n]][["Data"]] <-gsub("0000", n+1929, new_em[[n]][["Data"]])
+for (n in 1:N) { #"czyszcze dane", ujednolicam format
   new_em[[n]][["Data"]][new_em[[n]][["Data"]]<1] <-str_sub(new_em[[n]][["Data"]][new_em[[n]][["Data"]]<1],start=11)
+  #data w wikipedi jest róznie wpisywana, wiec staram sie to ujednolicic
   dzien <-substr(new_em[[n]][["Data"]],1,2)
   new_em[[n]][["Data"]]<-replace(new_em[[n]][["Data"]],grep("stycznia", new_em[[n]][["Data"]]),paste(toString(n+1929),"01",sep="-"))
   new_em[[n]][["Data"]] <-replace(new_em[[n]][["Data"]],grep("lutego", new_em[[n]][["Data"]]),paste(toString(n+1929),"02",sep="-"))
@@ -36,8 +50,8 @@ for (n in 1:N) { #"czyszcze danych, ujednolicam format"
   dzien <-gsub(" ","",dzien)
   dzien[strtoi(dzien)<10] <- paste0("0",dzien[strtoi(dzien)<10])
   new_em[[n]][["Data"]]<-paste(new_em[[n]][["Data"]],dzien,sep="-")
-  # pewnie da się to zrobić krócej ale już spedziłem na tym chyba z 5h przez to że format daty z wikipedii raz był "0000-02-1111 lutego" a raz "14 lipca" itp
-  # a do tego wszystkiego grep nie obsługuje 'ś' i 'ź' więc był problem z październikiem i wrześniem ale chyba jest ok narazie XD
+  # pewnie da się to zrobić krócej ale nam samym tym fragmentem spędziłem już za dużo czasu głownie przez to że format daty z wikipedii raz był "0000-02-1111 lutego" a raz "14 lipca" itp
+  # a do tego wszystkiego grep nie obsługuje 'ś' i 'ź' więc był problem z październikiem i wrześniem ale chyba dzała w tej postaci
   for(j in 1:J)
     {
       new_em[[n]][[j]][new_em[[n]][[j]]=='?'] <- NA
@@ -46,9 +60,16 @@ for (n in 1:N) { #"czyszcze danych, ujednolicam format"
   }
 
 superdane <- new_em
+#eksportuję sobie do pliku .csv na wszelki wypadek ;)
 lapply(superdane, function(x) write.table( data.frame(x), 'superdane.csv'  , append= T, sep=',' ))
-#View(superdane) # lista 89 elementów (jeden element == lista z danego roku)
+```
 
+Analiza
+========================================================
+Skoro dane są już obrobione przstępujemy do analizy
+
+Wyciągamy wszystkie potrzbne nam informacje, które wykorzystamy w przyszłości
+```{r}
 zgony_w_latach<-c()
 ocalenia_w_latach<-c()
 wszystkie_linie_w_latach<-c()
@@ -62,19 +83,33 @@ for (n in 1:N){
   wszystkie_kraje_w_latach<-append(wszystkie_kraje_w_latach,superdane[[n]][["Miejsce zdarzenia"]])
   ilosc_katastrof_w_latach<-append(ilosc_katastrof_w_latach,length(superdane[[n]][[1]][!is.na(superdane[[n]][["Ofiary"]])]))
 }
-#ocalenia
-#rocent_ocalalalych_w_latach <-round(ocalenia_w_latach/(ocalenia_w_latach+zgony_w_latach),2)
+```
 
-#procent ocalalych wykres
+Ocaleni
+========================================================
+
+```{r}
+#liczymy wektor wskażników w postaci ocalaleni/wszyscy pasażerowie dla każdego roku osobno 
+procent_ocalalalych_w_latach <-round(ocalenia_w_latach/(ocalenia_w_latach+zgony_w_latach),2)
+
+suma_ocalenia<-sum(ocalenia_w_latach)
+suma_zgonow<-sum(zgony_w_latach)
+round(suma_ocalenia/(suma_ocalenia+suma_zgonow),2)
+#wniosek -> statystycznie 47% szansy na ocalanie 
+
+```
+Ocaleni wykres
+========================================================
+
+```{r}
 lata<-c(1930:2018)
 aaa<-data.frame(lata,procent_ocalalalych_w_latach)
 ggplot(aaa, aes(x=lata, y=procent_ocalalalych_w_latach))+geom_bar(stat="identity", width=1,color="blue",fill="lightblue")+theme_minimal()
 
-suma_ocalenia<-sum(ocalenia_w_latach)
-suma_zgonow<-sum(zgony_w_latach)
-
-round(suma_ocalenia/(suma_ocalenia+suma_zgonow),2) #statystycznie 47% szansy na ocalanie 
-
+```
+Najniebezpieczniejsze linie
+========================================================
+```{r}
 #najniebezpieczniejsze linie
 tabela_linii <-sort(table(wszystkie_linie_w_latach),decreasing = T)
 #View(tabela_linii)
@@ -82,15 +117,29 @@ tabela_linii[1:10]
 #wynika to zapewne ze skalą przedśiębiorstw lotniczych, nie mogłem znaleźć danych
 #o ilościach lotów dla lini lotniczych w tamtych latach
 plot(tabela_linii[1:10],type='h',lwd=10)
-
+```
+Najniebezpieczniejsze kraje
+========================================================
+```{r}
 #najniebezpieczniejsze kraje
+# analogicznie do poprzedniego slajdu
 tabela_krajow <-sort(table(wszystkie_kraje_w_latach),decreasing = T)
-tabela_krajow[1:10] # tak samo jak wyżej
+tabela_krajow[1:10] 
 plot(tabela_krajow[1:10],type='h',lwd=10)
 
+```
+Czy bezpieczeństwo latania zmieniało się na przestrzeni lat?
+========================================================
+```{r}
 #ilośc zabitych / ilośc katastrof na przestrzeni lat
 wskaznik_zgony_per_katastrofa<-zgony_w_latach/ilosc_katastrof_w_latach
 #plot(wskaznik_zgony_per_katastrofa, type='h',xlab="lata")
 bbb <- data.frame(lata,wskaznik_zgony_per_katastrofa)
 ggplot(bbb, aes(x=lata, y=wskaznik_zgony_per_katastrofa))+geom_bar(stat="identity", width=1,color="blue",fill="lightblue")+theme_minimal()
+```
+TBA
+========================================================
+coś jescze tutaj muszę dodać i dowiedzieć się czemu wykresy sa takie małe i nie wyśrodkowane 
+```{r}
 
+```
