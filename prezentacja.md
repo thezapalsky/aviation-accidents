@@ -400,7 +400,7 @@ tabela_linii[1:10]
 
 ```
 wszystkie_linie_w_latach
-                  Aeroflot                        TWA 
+                  Aerofłot                        TWA 
                         51                         47 
            United Airlines                     Pan Am 
                         29                         23 
@@ -435,7 +435,7 @@ Stany Zjednoczone              ZSRR         Indonezja   Wielka Brytania
               269                50                39                38 
             Rosja           Francja           Japonia            Kanada 
                32                25                23                21 
-           Wlochy             Indie 
+           Włochy             Indie 
                21                19 
 ```
 
