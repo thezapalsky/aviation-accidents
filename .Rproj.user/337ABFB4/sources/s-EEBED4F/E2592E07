@@ -1,0 +1,24 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1547322766793.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "E2592E07",
+    "lastKnownWriteTime" : 1547931586,
+    "last_content_update" : 1547931585794,
+    "path" : "D:/studia/PwR/projekt_PwR/pwr_projekt/script1.R",
+    "project_path" : "script1.R",
+    "properties" : {
+        "cursorPosition" : "60,15",
+        "docOutlineVisible" : "0",
+        "scrollLine" : "41",
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 1,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

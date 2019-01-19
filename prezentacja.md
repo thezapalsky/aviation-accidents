@@ -1,3 +1,11 @@
+<style>
+body {
+    overflow: scroll;
+}
+
+</style>
+<meta charset="UTF-8">
+
 Analiza katastrof cywilnych samolotów pasażerskich w latach 1930-2018
 ========================================================
 author: Mikołaj Zapalski Jan Proniewicz
@@ -33,34 +41,32 @@ Krok 2 - "oczyszczamy" dane
 ```r
 N <- 89 # lata 1930 - 2018
 J <- 9
+M <-12
+miesiace <- matrix(c("stycznia", "01", "lutego", "02", "marca", "03", "kwietnia", "04", "maja", "05", "czerwca", "06", "lipca", "07", "sierpnia", "08", "wrze", "09", "pa", "10", "listopada", "11", "grudnia", "12"), 2, 12)
 for (n in 1:N) { #"czyszcze dane", ujednolicam format
   new_em[[n]][["Data"]][new_em[[n]][["Data"]]<1] <-str_sub(new_em[[n]][["Data"]][new_em[[n]][["Data"]]<1],start=11)
-  #data w wikipedi jest róznie wpisywana, wiec staram sie to ujednolicic
   dzien <-substr(new_em[[n]][["Data"]],1,2)
-  new_em[[n]][["Data"]]<-replace(new_em[[n]][["Data"]],grep("stycznia", new_em[[n]][["Data"]]),paste(toString(n+1929),"01",sep="-"))
-  new_em[[n]][["Data"]] <-replace(new_em[[n]][["Data"]],grep("lutego", new_em[[n]][["Data"]]),paste(toString(n+1929),"02",sep="-"))
-  new_em[[n]][["Data"]] <-replace(new_em[[n]][["Data"]],grep("marca", new_em[[n]][["Data"]]),paste(toString(n+1929),"03",sep="-"))
-  new_em[[n]][["Data"]] <-replace(new_em[[n]][["Data"]],grep("kwietnia", new_em[[n]][["Data"]]),paste(toString(n+1929),"04",sep="-"))
-  new_em[[n]][["Data"]] <-replace(new_em[[n]][["Data"]],grep("maja", new_em[[n]][["Data"]]),paste(toString(n+1929),"05",sep="-"))
-  new_em[[n]][["Data"]] <-replace(new_em[[n]][["Data"]],grep("czerwca", new_em[[n]][["Data"]]),paste(toString(n+1929),"06",sep="-"))
-  new_em[[n]][["Data"]] <-replace(new_em[[n]][["Data"]],grep("lipca", new_em[[n]][["Data"]]),paste(toString(n+1929),"07",sep="-"))
-  new_em[[n]][["Data"]] <-replace(new_em[[n]][["Data"]],grep("sierpnia", new_em[[n]][["Data"]]),paste(toString(n+1929),"08",sep="-"))
-  new_em[[n]][["Data"]] <-replace(new_em[[n]][["Data"]],grep("wrze", new_em[[n]][["Data"]]),paste(toString(n+1929),"09",sep="-"))
-  new_em[[n]][["Data"]] <-replace(new_em[[n]][["Data"]],grep("listopada", new_em[[n]][["Data"]]),paste(toString(n+1929),"11",sep="-"))
-  new_em[[n]][["Data"]] <-replace(new_em[[n]][["Data"]],grep("grudnia", new_em[[n]][["Data"]]),paste(toString(n+1929),"12",sep="-"))
-  new_em[[n]][["Data"]] <-replace(new_em[[n]][["Data"]],grep("pa", new_em[[n]][["Data"]]),paste(toString(n+1929),"10",sep="-"))
+  for(m in 1:M){
+    new_em[[n]][["Data"]]<-replace(new_em[[n]][["Data"]],grep(miesiace[1,m], new_em[[n]][["Data"]]),paste(toString(n+1929),miesiace[2,m],sep="-"))
+  }
   dzien <-gsub(" ","",dzien)
   dzien[strtoi(dzien)<10] <- paste0("0",dzien[strtoi(dzien)<10])
   new_em[[n]][["Data"]]<-paste(new_em[[n]][["Data"]],dzien,sep="-")
-  # pewnie da się to zrobić krócej ale nam samym tym fragmentem spędziłem już za dużo czasu głownie przez to że format daty z wikipedii raz był "0000-02-1111 lutego" a raz "14 lipca" itp
-  # a do tego wszystkiego grep nie obsługuje 'ś' i 'ź' więc był problem z październikiem i wrześniem ale chyba dzała w tej postaci
-  for(j in 1:J)
+  #dane z wikipedii miały raz format "0000-02-1111 lutego" a raz "14 lipca" itp
+}
+```
+Krok 2 - "oczyszczamy" dane cd.
+========================================================
+
+
+```r
+for (n in 1:N) {
+ for(j in 1:J)
     {
       new_em[[n]][[j]][new_em[[n]][[j]]=='?'] <- NA
     }
     #zamieniam '?' na <NA>
-  }
-
+}
 superdane <- new_em
 #eksportuję sobie do pliku .csv na wszelki wypadek ;)
 lapply(superdane, function(x) write.table( data.frame(x), 'superdane.csv'  , append= T, sep=',' ))
@@ -387,7 +393,71 @@ aaa<-data.frame(lata,procent_ocalalalych_w_latach)
 ggplot(aaa, aes(x=lata, y=procent_ocalalalych_w_latach))+geom_bar(stat="identity", width=1,color="blue",fill="lightblue")+theme_minimal()
 ```
 
-![plot of chunk unnamed-chunk-5](prezentacja-figure/unnamed-chunk-5-1.png)
+![plot of chunk unnamed-chunk-6](prezentacja-figure/unnamed-chunk-6-1.png)
+Ocaleni / katastrofa
+========================================================
+
+```r
+#ilość ocalałych / ilość katastrof na przestrzeni lat
+suma_katastrof <- sum(ilosc_katastrof_w_latach)
+wskaznik_ocaleni_per_katastrofa<-ocalenia_w_latach/ilosc_katastrof_w_latach
+ccc<-data.frame(lata,wskaznik_ocaleni_per_katastrofa)
+ggplot(ccc, aes(x=lata, y=wskaznik_ocaleni_per_katastrofa))+geom_bar(stat="identity", width=1,color="blue",fill="lightblue")+theme_minimal()
+```
+
+![plot of chunk unnamed-chunk-7](prezentacja-figure/unnamed-chunk-7-1.png)
+
+```r
+srednia_ocalalych_per_katastrofa<-round(suma_ocalenia/suma_katastrof) 
+print(srednia_ocalalych_per_katastrofa)#statystycznie po każdej katastrofie ocalało średnio ok. 40 osób
+```
+
+```
+[1] 40
+```
+Odchylenie standardowe ocaleń
+========================================================
+
+```r
+#odchylenia standardowe ocalałych w poszczególnych latach
+odchylenie_ocalalych_w_latach<-c()
+
+for(n in 1:N){
+  odchylenie_ocalalych_w_latach<-append(odchylenie_ocalalych_w_latach,sqrt(sum((strtoi(superdane[[n]][["Ocaleni"]])-wskaznik_ocaleni_per_katastrofa[n])^2,na.rm = T)/ilosc_katastrof_w_latach[n]))
+}
+fff<-data.frame(lata,odchylenie_ocalalych_w_latach)
+ggplot(fff, aes(x=lata, y=odchylenie_ocalalych_w_latach))+geom_bar(stat="identity", width=1,color="blue",fill="lightblue")+theme_minimal()
+```
+
+![plot of chunk unnamed-chunk-8](prezentacja-figure/unnamed-chunk-8-1.png)
+
+```r
+round(sqrt(sum((ocalenia_w_latach-srednia_ocalalych_per_katastrofa)^2)/suma_katastrof)) #w niektórych katastrofach liczba ocalałych odchylała się od średniej o ok. 205 osób
+```
+
+```
+[1] 205
+```
+Ocaleni ogólnie
+========================================================
+
+```r
+#średnia liczba ocalałych ogólnie i odchylenie standardowe
+round(mean(ocalenia_w_latach)) #średnio w każdym roku ocalało ok. 488 osób
+```
+
+```
+[1] 488
+```
+
+```r
+round(sd(ocalenia_w_latach)) #w niektórych latach liczba ocalałych odchylała się od średniej o ok. 559 osób
+```
+
+```
+[1] 559
+```
+
 Najniebezpieczniejsze linie
 ========================================================
 
@@ -400,7 +470,7 @@ tabela_linii[1:10]
 
 ```
 wszystkie_linie_w_latach
-                  Aerofłot                        TWA 
+                  Aeroflot                        TWA 
                         51                         47 
            United Airlines                     Pan Am 
                         29                         23 
@@ -418,7 +488,7 @@ wszystkie_linie_w_latach
 plot(tabela_linii[1:10],type='h',lwd=10)
 ```
 
-![plot of chunk unnamed-chunk-6](prezentacja-figure/unnamed-chunk-6-1.png)
+![plot of chunk unnamed-chunk-10](prezentacja-figure/unnamed-chunk-10-1.png)
 Najniebezpieczniejsze kraje
 ========================================================
 
@@ -435,7 +505,7 @@ Stany Zjednoczone              ZSRR         Indonezja   Wielka Brytania
               269                50                39                38 
             Rosja           Francja           Japonia            Kanada 
                32                25                23                21 
-           Włochy             Indie 
+           Wlochy             Indie 
                21                19 
 ```
 
@@ -443,7 +513,7 @@ Stany Zjednoczone              ZSRR         Indonezja   Wielka Brytania
 plot(tabela_krajow[1:10],type='h',lwd=10)
 ```
 
-![plot of chunk unnamed-chunk-7](prezentacja-figure/unnamed-chunk-7-1.png)
+![plot of chunk unnamed-chunk-11](prezentacja-figure/unnamed-chunk-11-1.png)
 Czy bezpieczeństwo latania zmieniało się na przestrzeni lat?
 ========================================================
 
@@ -455,8 +525,80 @@ bbb <- data.frame(lata,wskaznik_zgony_per_katastrofa)
 ggplot(bbb, aes(x=lata, y=wskaznik_zgony_per_katastrofa))+geom_bar(stat="identity", width=1,color="blue",fill="lightblue")+theme_minimal()
 ```
 
-![plot of chunk unnamed-chunk-8](prezentacja-figure/unnamed-chunk-8-1.png)
-TBA
+![plot of chunk unnamed-chunk-12](prezentacja-figure/unnamed-chunk-12-1.png)
+
+
+Zgony
 ========================================================
-coś jescze tutaj muszę dodać i dowiedzieć się czemu wykresy sa takie małe i nie wyśrodkowane 
+
+```r
+#stosunek liczby zgonów do liczby ocalałych
+stosunek_zgonow_do_ocalalych<-zgony_w_latach/ocalenia_w_latach
+ddd<-data.frame(lata,stosunek_zgonow_do_ocalalych)
+ggplot(ddd, aes(x=lata, y=stosunek_zgonow_do_ocalalych))+geom_bar(stat="identity", width=1,color="blue",fill="lightblue")+theme_minimal()
+```
+
+![plot of chunk unnamed-chunk-13](prezentacja-figure/unnamed-chunk-13-1.png)
+
+```r
+round(suma_zgonow/suma_ocalenia, 2) #statystycznie na jedną osobę ocalałą po katastrofie przypada jedna/dwie, która/e zginęła/y (stosunek 1.13)
+```
+
+```
+[1] 1.13
+```
+Średnia ofiar z wszystkich katastrof
+========================================================
+
+```r
+srednia_zgonow_per_katastrofa<-round(suma_zgonow/suma_katastrof) 
+print(srednia_zgonow_per_katastrofa) #statystycznie w każdej katastrofie zginęło średnio ok.45 osób
+```
+
+```
+[1] 45
+```
+
+Odchylenie standardowe zgonów
+========================================================
+
+```r
+#odchylenia standardowe zgonów w poszczególnych latach
+odchylenie_zgonow_w_latach<-c()
+
+for(n in 1:N){
+  odchylenie_zgonow_w_latach<-append(odchylenie_zgonow_w_latach,sqrt(sum((strtoi(superdane[[n]][["Ofiary"]])-wskaznik_zgony_per_katastrofa[n])^2,na.rm = T)/ilosc_katastrof_w_latach[n]))
+}
+eee<-data.frame(lata,odchylenie_zgonow_w_latach)
+ggplot(eee, aes(x=lata, y=odchylenie_zgonow_w_latach))+geom_bar(stat="identity", width=1,color="blue",fill="lightblue")+theme_minimal()
+```
+
+![plot of chunk unnamed-chunk-15](prezentacja-figure/unnamed-chunk-15-1.png)
+
+```r
+round(sqrt(sum((zgony_w_latach-srednia_zgonow_per_katastrofa)^2)/suma_katastrof)) #w niektórych katastrofach liczba zgonów odchylała się od średniej o ok. 193 osoby
+```
+
+```
+[1] 192
+```
+Zgony ogólnie
+========================================================
+
+```r
+#średnia liczba zgonów ogólnie i odchylenie standardowe
+round(mean(zgony_w_latach)) #średnio w każdym roku zginęło ok. 550 osób
+```
+
+```
+[1] 550
+```
+
+```r
+round(sd(zgony_w_latach)) #w niektórych latach liczba zgonów odchylała się od średniej o ok. 439 osób
+```
+
+```
+[1] 439
+```
 

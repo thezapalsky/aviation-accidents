@@ -99,7 +99,7 @@ wskaznik_zgony_per_katastrofa<-zgony_w_latach/ilosc_katastrof_w_latach
 #plot(wskaznik_zgony_per_katastrofa, type='h',xlab="lata")
 bbb <- data.frame(lata,wskaznik_zgony_per_katastrofa)
 ggplot(bbb, aes(x=lata, y=wskaznik_zgony_per_katastrofa))+geom_bar(stat="identity", width=1,color="blue",fill="lightblue")+theme_minimal()
-
+###janek###
 suma_katastrof <- sum(ilosc_katastrof_w_latach)
 
 srednia_zgonow_per_katastrofa<-round(suma_zgonow/suma_katastrof) 
