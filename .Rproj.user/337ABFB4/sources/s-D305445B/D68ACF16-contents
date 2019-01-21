@@ -1,6 +1,7 @@
 <style>
 body {
     overflow: scroll;
+    
 }
 
 </style>
@@ -11,7 +12,9 @@ Analiza katastrof cywilnych samolotów pasażerskich w latach 1930-2018
 author: Mikołaj Zapalski Jan Proniewicz
 date: 14 styczeń 2019
 autosize: true
-(polecam powiększyć okno na cały ekran, aby nie ucinało slajdów)
+font-family: 'Myriad Pro'
+width: 1920
+height: 1080
 
 Krok 1 - pobieramy dane
 ========================================================
@@ -106,7 +109,7 @@ round(suma_ocalenia/(suma_ocalenia+suma_zgonow),2)
 Ocaleni wykres
 ========================================================
 
-```{r}
+```{r ,echo=TRUE,fig.width=8,fig.height=4.5,dpi=300,out.width="1920px",out.height="1080px"}
 lata<-c(1930:2018)
 aaa<-data.frame(lata,procent_ocalalalych_w_latach)
 ggplot(aaa, aes(x=lata, y=procent_ocalalalych_w_latach))+geom_bar(stat="identity", width=1,color="blue",fill="lightblue")+theme_minimal()
@@ -114,7 +117,7 @@ ggplot(aaa, aes(x=lata, y=procent_ocalalalych_w_latach))+geom_bar(stat="identity
 ```
 Ocaleni / katastrofa
 ========================================================
-```{r}
+```{r ,echo=TRUE,fig.width=8,fig.height=4.5,dpi=300,out.width="1920px",out.height="1080px"}
 #ilość ocalałych / ilość katastrof na przestrzeni lat
 suma_katastrof <- sum(ilosc_katastrof_w_latach)
 wskaznik_ocaleni_per_katastrofa<-ocalenia_w_latach/ilosc_katastrof_w_latach
@@ -127,7 +130,7 @@ print(srednia_ocalalych_per_katastrofa)#statystycznie po każdej katastrofie oca
 ```
 Odchylenie standardowe ocaleń
 ========================================================
-```{r}
+```{r ,echo=TRUE,fig.width=8,fig.height=4.5,dpi=300,out.width="1920px",out.height="1080px"}
 #odchylenia standardowe ocalałych w poszczególnych latach
 odchylenie_ocalalych_w_latach<-c()
 
@@ -151,28 +154,28 @@ round(sd(ocalenia_w_latach)) #w niektórych latach liczba ocalałych odchylała 
 
 Najniebezpieczniejsze linie
 ========================================================
-```{r}
+```{r ,echo=TRUE,fig.width=8,fig.height=4.5,dpi=300,out.width="1920px",out.height="1080px"}
 #najniebezpieczniejsze linie
 tabela_linii <-sort(table(wszystkie_linie_w_latach),decreasing = T)
 #View(tabela_linii)
 tabela_linii[1:10]
 #wynika to zapewne ze skalą przedśiębiorstw lotniczych, nie mogłem znaleźć danych
 #o ilościach lotów dla lini lotniczych w tamtych latach
-plot(tabela_linii[1:10],type='h',lwd=10)
+plot(tabela_linii[1:10],type='h',lwd=10,las = 2)
 ```
 Najniebezpieczniejsze kraje
 ========================================================
-```{r}
+```{r ,echo=TRUE,fig.width=8,fig.height=4.5,dpi=300,out.width="1920px",out.height="1080px"}
 #najniebezpieczniejsze kraje
 # analogicznie do poprzedniego slajdu
 tabela_krajow <-sort(table(wszystkie_kraje_w_latach),decreasing = T)
 tabela_krajow[1:10] 
-plot(tabela_krajow[1:10],type='h',lwd=10)
+plot(tabela_krajow[1:10],type='h',lwd=10,las = 2)
 
 ```
 Czy bezpieczeństwo latania zmieniało się na przestrzeni lat?
 ========================================================
-```{r}
+```{r ,echo=TRUE,fig.width=8,fig.height=4.5,dpi=300,out.width="1920px",out.height="1080px"}
 #ilośc zabitych / ilośc katastrof na przestrzeni lat
 wskaznik_zgony_per_katastrofa<-zgony_w_latach/ilosc_katastrof_w_latach
 #plot(wskaznik_zgony_per_katastrofa, type='h',xlab="lata")
@@ -183,7 +186,7 @@ ggplot(bbb, aes(x=lata, y=wskaznik_zgony_per_katastrofa))+geom_bar(stat="identit
 
 Zgony
 ========================================================
-```{r}
+```{r ,echo=TRUE,fig.width=8,fig.height=4.5,dpi=300,out.width="1920px",out.height="1080px"}
 #stosunek liczby zgonów do liczby ocalałych
 stosunek_zgonow_do_ocalalych<-zgony_w_latach/ocalenia_w_latach
 ddd<-data.frame(lata,stosunek_zgonow_do_ocalalych)
@@ -202,7 +205,7 @@ print(srednia_zgonow_per_katastrofa) #statystycznie w każdej katastrofie zginę
 
 Odchylenie standardowe zgonów
 ========================================================
-```{r}
+```{r ,echo=TRUE,fig.width=8,fig.height=4.5,dpi=300,out.width="1920px",out.height="1080px"}
 #odchylenia standardowe zgonów w poszczególnych latach
 odchylenie_zgonow_w_latach<-c()
 

@@ -1,6 +1,7 @@
 <style>
 body {
     overflow: scroll;
+    
 }
 
 </style>
@@ -11,7 +12,9 @@ Analiza katastrof cywilnych samolotów pasażerskich w latach 1930-2018
 author: Mikołaj Zapalski Jan Proniewicz
 date: 14 styczeń 2019
 autosize: true
-(polecam powiększyć okno na cały ekran, aby nie ucinało slajdów)
+font-family: 'Myriad Pro'
+width: 1920
+height: 1080
 
 Krok 1 - pobieramy dane
 ========================================================
@@ -393,7 +396,7 @@ aaa<-data.frame(lata,procent_ocalalalych_w_latach)
 ggplot(aaa, aes(x=lata, y=procent_ocalalalych_w_latach))+geom_bar(stat="identity", width=1,color="blue",fill="lightblue")+theme_minimal()
 ```
 
-![plot of chunk unnamed-chunk-6](prezentacja-figure/unnamed-chunk-6-1.png)
+<img src="prezentacja-figure/unnamed-chunk-6-1.png" title="plot of chunk unnamed-chunk-6" alt="plot of chunk unnamed-chunk-6" width="1920px" height="1080px" />
 Ocaleni / katastrofa
 ========================================================
 
@@ -405,7 +408,7 @@ ccc<-data.frame(lata,wskaznik_ocaleni_per_katastrofa)
 ggplot(ccc, aes(x=lata, y=wskaznik_ocaleni_per_katastrofa))+geom_bar(stat="identity", width=1,color="blue",fill="lightblue")+theme_minimal()
 ```
 
-![plot of chunk unnamed-chunk-7](prezentacja-figure/unnamed-chunk-7-1.png)
+<img src="prezentacja-figure/unnamed-chunk-7-1.png" title="plot of chunk unnamed-chunk-7" alt="plot of chunk unnamed-chunk-7" width="1920px" height="1080px" />
 
 ```r
 srednia_ocalalych_per_katastrofa<-round(suma_ocalenia/suma_katastrof) 
@@ -429,7 +432,7 @@ fff<-data.frame(lata,odchylenie_ocalalych_w_latach)
 ggplot(fff, aes(x=lata, y=odchylenie_ocalalych_w_latach))+geom_bar(stat="identity", width=1,color="blue",fill="lightblue")+theme_minimal()
 ```
 
-![plot of chunk unnamed-chunk-8](prezentacja-figure/unnamed-chunk-8-1.png)
+<img src="prezentacja-figure/unnamed-chunk-8-1.png" title="plot of chunk unnamed-chunk-8" alt="plot of chunk unnamed-chunk-8" width="1920px" height="1080px" />
 
 ```r
 round(sqrt(sum((ocalenia_w_latach-srednia_ocalalych_per_katastrofa)^2)/suma_katastrof)) #w niektórych katastrofach liczba ocalałych odchylała się od średniej o ok. 205 osób
@@ -485,10 +488,10 @@ wszystkie_linie_w_latach
 ```r
 #wynika to zapewne ze skalą przedśiębiorstw lotniczych, nie mogłem znaleźć danych
 #o ilościach lotów dla lini lotniczych w tamtych latach
-plot(tabela_linii[1:10],type='h',lwd=10)
+plot(tabela_linii[1:10],type='h',lwd=10,las = 2)
 ```
 
-![plot of chunk unnamed-chunk-10](prezentacja-figure/unnamed-chunk-10-1.png)
+<img src="prezentacja-figure/unnamed-chunk-10-1.png" title="plot of chunk unnamed-chunk-10" alt="plot of chunk unnamed-chunk-10" width="1920px" height="1080px" />
 Najniebezpieczniejsze kraje
 ========================================================
 
@@ -510,10 +513,10 @@ Stany Zjednoczone              ZSRR         Indonezja   Wielka Brytania
 ```
 
 ```r
-plot(tabela_krajow[1:10],type='h',lwd=10)
+plot(tabela_krajow[1:10],type='h',lwd=10,las = 2)
 ```
 
-![plot of chunk unnamed-chunk-11](prezentacja-figure/unnamed-chunk-11-1.png)
+<img src="prezentacja-figure/unnamed-chunk-11-1.png" title="plot of chunk unnamed-chunk-11" alt="plot of chunk unnamed-chunk-11" width="1920px" height="1080px" />
 Czy bezpieczeństwo latania zmieniało się na przestrzeni lat?
 ========================================================
 
@@ -525,7 +528,7 @@ bbb <- data.frame(lata,wskaznik_zgony_per_katastrofa)
 ggplot(bbb, aes(x=lata, y=wskaznik_zgony_per_katastrofa))+geom_bar(stat="identity", width=1,color="blue",fill="lightblue")+theme_minimal()
 ```
 
-![plot of chunk unnamed-chunk-12](prezentacja-figure/unnamed-chunk-12-1.png)
+<img src="prezentacja-figure/unnamed-chunk-12-1.png" title="plot of chunk unnamed-chunk-12" alt="plot of chunk unnamed-chunk-12" width="1920px" height="1080px" />
 
 
 Zgony
@@ -538,7 +541,7 @@ ddd<-data.frame(lata,stosunek_zgonow_do_ocalalych)
 ggplot(ddd, aes(x=lata, y=stosunek_zgonow_do_ocalalych))+geom_bar(stat="identity", width=1,color="blue",fill="lightblue")+theme_minimal()
 ```
 
-![plot of chunk unnamed-chunk-13](prezentacja-figure/unnamed-chunk-13-1.png)
+<img src="prezentacja-figure/unnamed-chunk-13-1.png" title="plot of chunk unnamed-chunk-13" alt="plot of chunk unnamed-chunk-13" width="1920px" height="1080px" />
 
 ```r
 round(suma_zgonow/suma_ocalenia, 2) #statystycznie na jedną osobę ocalałą po katastrofie przypada jedna/dwie, która/e zginęła/y (stosunek 1.13)
@@ -573,7 +576,7 @@ eee<-data.frame(lata,odchylenie_zgonow_w_latach)
 ggplot(eee, aes(x=lata, y=odchylenie_zgonow_w_latach))+geom_bar(stat="identity", width=1,color="blue",fill="lightblue")+theme_minimal()
 ```
 
-![plot of chunk unnamed-chunk-15](prezentacja-figure/unnamed-chunk-15-1.png)
+<img src="prezentacja-figure/unnamed-chunk-15-1.png" title="plot of chunk unnamed-chunk-15" alt="plot of chunk unnamed-chunk-15" width="1920px" height="1080px" />
 
 ```r
 round(sqrt(sum((zgony_w_latach-srednia_zgonow_per_katastrofa)^2)/suma_katastrof)) #w niektórych katastrofach liczba zgonów odchylała się od średniej o ok. 193 osoby
