@@ -16,6 +16,16 @@ font-family: 'Myriad Pro'
 width: 1920
 height: 1080
 
+Podział pracy
+========================================================
+
+
+Prezentacja - Mikołaj Zapalski
+
+Aplikacja - Jan Proniewicz
+
+Skrypty i wskaźniki napisane wspólnymi siłami.
+
 Krok 1 - pobieramy dane
 ========================================================
 
@@ -92,7 +102,16 @@ for (n in 1:N){
   ilosc_katastrof_w_latach<-append(ilosc_katastrof_w_latach,length(superdane[[n]][[1]][!is.na(superdane[[n]][["Ofiary"]])]))
 }
 ```
+Ilośc katastrof na przestrzeni lat
+========================================================
 
+```{r ,echo=TRUE,fig.width=8,fig.height=4.5,dpi=300,out.width="1920px",out.height="1080px"}
+lata<-c(1930:2018)
+xxx<-data.frame(lata,ilosc_katastrof_w_latach)
+ggplot(xxx, aes(x=lata, y=ilosc_katastrof_w_latach))+geom_bar(stat="identity", width=1,color="blue",fill="lightblue")+theme_minimal()
+#jak widać wraz ze wzrostem popularnośći samolotóW jako środku tranposrtu, zwiększała się ilośc wypadków
+
+```
 Ocaleni
 ========================================================
 
@@ -189,6 +208,7 @@ Zgony
 ```{r ,echo=TRUE,fig.width=8,fig.height=4.5,dpi=300,out.width="1920px",out.height="1080px"}
 #stosunek liczby zgonów do liczby ocalałych
 stosunek_zgonow_do_ocalalych<-zgony_w_latach/ocalenia_w_latach
+stosunek_zgonow_do_ocalalych[stosunek_zgonow_do_ocalalych==Inf | stosunek_zgonow_do_ocalalych=="NaN"]<-0 
 ddd<-data.frame(lata,stosunek_zgonow_do_ocalalych)
 ggplot(ddd, aes(x=lata, y=stosunek_zgonow_do_ocalalych))+geom_bar(stat="identity", width=1,color="blue",fill="lightblue")+theme_minimal()
 
